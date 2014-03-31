@@ -9,12 +9,13 @@ var djng_forms = angular.module('ng.django.forms', []);
 // This directive overrides some of the internal behavior on forms if used together with AngularJS.
 // If not used, the content of bound forms is not displayed, because AngularJS does not know about
 // the concept of bound forms.
-djng_forms.directive('form', function() {
+djng_forms.directive('form', function($log) {
 	return {
 		restrict: 'E',
 		scope: 'isolate',
 		priority: -1,
 		link: function(scope, element, attrs) {
+			if (!attrs.name) { $log.error('You need to define a name-attribute on a form for django-angular!');}
 			var form = scope[attrs.name];
 			var fields = angular.element(element).find('input');
 			angular.forEach(fields, function(field) {
@@ -76,7 +77,7 @@ djng_forms.provider('djangoForm', function() {
 	var NON_FIELD_ERRORS = '__all__';
 
 	function isNotEmpty(obj) {
-		for (var p in obj) { 
+		for (var p in obj) {
 			if (obj.hasOwnProperty(p))
 				return true;
 		}
